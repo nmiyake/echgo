@@ -12,32 +12,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
-
-import (
-	"flag"
-	"fmt"
-	"os"
-	"strings"
-
-	"github.com/nmiyake/echgo/echo"
-)
-
-var version = "none"
-
-func main() {
-	versionVar := flag.Bool("version", false, "print version")
-	typeVar := flag.String("type", echo.Simple.String(), "type of echo")
-	flag.Parse()
-	if *versionVar {
-		fmt.Println("echgo version:", version)
-		return
-	}
-	typ, err := echo.TypeFrom(*typeVar)
-	if err != nil {
-		fmt.Println("invalid echo type:", *typeVar)
-		os.Exit(1)
-	}
-	echoer := echo.NewEchoer(typ)
-	fmt.Println(echoer.Echo(strings.Join(flag.Args(), " ")))
-}
+// Package integration contains integration tests.
+package integration
