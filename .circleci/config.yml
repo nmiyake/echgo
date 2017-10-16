@@ -1,0 +1,89 @@
+defaults: &defaults
+  working_directory: /go/src/github.com/nmiyake/echgo
+    docker:
+      - image: golang:1.9.1
+
+version: 2
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - type: checkout
+      - type: cache-restore
+        key: godel-{{ checksum "godelw" }}
+      - type: run
+        name: "Verify godel version"
+        command: ./godelw version
+      - type: cache-save
+        key: godel-{{ checksum "godelw" }}
+        paths:
+          - /root/.godel
+      - type: run
+        name: "Verify Go version"
+        command: go version
+      - type: run
+        name: "Install project packages"
+        command: go install $(./godelw packages)
+      - type: run
+        name: "Create test output directory"
+        command: mkdir -p /tmp/test-results/"${CIRCLE_PROJECT_REPONAME}"
+      - type: run
+        name: "Run godel verification"
+        command: ./godelw verify --apply=false --junit-output="/tmp/test-results/${CIRCLE_PROJECT_REPONAME}-tests.xml"
+      - type: test-results-store
+        path: /tmp/test-results
+      - type: artifacts-store
+        path: /tmp/test-results
+        destination: test-results
+      - type: run
+        name: "Create distribution"
+        command: ./godelw dist
+      - type: artifacts-store
+        path: /go/src/github.com/nmiyake/echgo/dist
+  wiki:
+    <<: *defaults
+    steps:
+      - type: checkout
+      - type: cache-restore
+        key: godel-{{ checksum "godelw" }}
+      - type: run
+        name: "Verify godel version"
+        command: ./godelw version
+      - type: run
+        name: "Update GitHub Wiki on master branch"
+        command: ./godelw github-wiki --docs-dir docs --repository=git@github.com:nmiyake/echgo.wiki.git
+  publish:
+    <<: *defaults
+    steps:
+      - type: checkout
+      - type: cache-restore
+        key: godel-{{ checksum "godelw" }}
+      - type: run
+        name: "Verify godel version"
+        command: ./godelw version
+      - type: run
+        name: "Publish"
+        command: ./godelw publish github --url https://api.github.com --user nmiyake --password $GITHUB_TOKEN --owner nmiyake --repository echgo
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /.*/
+      - wiki:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+      - publish:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /^[0-9]+(\.[0-9]+)+(-rc[0-9]+)?(-alpha[0-9]+)?$/
+            branches:
+              ignore: /.*/
