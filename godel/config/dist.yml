@@ -1,0 +1,10 @@
+products:
+  echgo:
+    build:
+      main-pkg: .
+      version-var: main.version
+      os-archs:
+        - os: darwin
+          arch: amd64
+        - os: linux
+          arch: amd64
