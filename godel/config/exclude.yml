@@ -1,6 +1,6 @@
 names:
   - "\\..+"
   - "vendor"
+  - ".+_string.go"
 paths:
   - "godel"
-  - "echo/type_string.go"
