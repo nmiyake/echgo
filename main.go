@@ -9,5 +9,6 @@ import (
 )
 
 func main() {
-	fmt.Println(echo.Echo(strings.Join(os.Args[1:], " ")))
+	echoer := echo.NewEchoer()
+	fmt.Println(echoer.Echo(strings.Join(os.Args[1:], " ")))
 }

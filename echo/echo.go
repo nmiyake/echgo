@@ -1,5 +1,11 @@
 package echo
 
-func Echo(in string) string {
-	fmt.Println(strings.Join(os.Args[1:], " "))
+func NewEchoer() Echoer {
+	return &simpleEchoer{}
+}
+
+type simpleEchoer struct{}
+
+func (e *simpleEchoer) Echo(in string) string {
+	return in
 }
