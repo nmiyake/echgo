@@ -21,7 +21,7 @@ import (
 )
 
 func TestEcho(t *testing.T) {
-	echoer := echo.NewEchoer()
+	echoer := echo.NewEchoer(echo.Simple)
 	for i, tc := range []struct {
 		in   string
 		want string

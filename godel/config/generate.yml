@@ -1,0 +1,6 @@
+generators:
+  stringer:
+    go-generate-dir: echo
+    gen-paths:
+      paths:
+        - echo/type_string.go

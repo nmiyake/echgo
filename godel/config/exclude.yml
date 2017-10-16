@@ -3,3 +3,4 @@ names:
   - "vendor"
 paths:
   - "godel"
+  - "echo/type_string.go"

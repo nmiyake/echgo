@@ -26,11 +26,17 @@ var version = "none"
 
 func main() {
 	versionVar := flag.Bool("version", false, "print version")
+	typeVar := flag.String("type", echo.Simple.String(), "type of echo")
 	flag.Parse()
 	if *versionVar {
 		fmt.Println("echgo version:", version)
 		return
 	}
-	echoer := echo.NewEchoer()
+	typ, err := echo.TypeFrom(*typeVar)
+	if err != nil {
+		fmt.Println("invalid echo type:", *typeVar)
+		return
+	}
+	echoer := echo.NewEchoer(typ)
 	fmt.Println(echoer.Echo(strings.Join(flag.Args(), " ")))
 }
