@@ -1,1 +1,1 @@
-`echgo` is a program that echoes input provided by the user.
+`echgo` is a program that echoes input provided by the user
